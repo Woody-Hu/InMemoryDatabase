@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace InMemoryDatabase
@@ -11,11 +12,11 @@ namespace InMemoryDatabase
 
         private ConcurrentDictionary<Type, IRegisteredItem> _concurrentRegisteredItemDictionary = new ConcurrentDictionary<Type, IRegisteredItem>();
 
-        public void RegisteredType<T>(Func<T, Task<JToken>> forwardFunc, Func<JToken, Task<T>> backwardFunc, Func<T, Task<string>> getIdFunc)
+        public void RegisteredType<T>(Func<T, Task<string>> getIdFunc)
             where T : class
         {
             var type = typeof(T);
-            var item = new RegisteredItem<T>(forwardFunc, backwardFunc, getIdFunc);
+            var item = new RegisteredItem<T>(t => Task.FromResult(JToken.Parse(JsonConvert.SerializeObject(t))), j => Task.FromResult(JsonConvert.DeserializeObject<T>(j.ToString())), getIdFunc);
             _concurrentRegisteredItemDictionary.GetOrAdd(type, item);
         }
 
