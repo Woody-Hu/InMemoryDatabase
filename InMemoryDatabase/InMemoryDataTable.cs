@@ -15,7 +15,7 @@ namespace InMemoryDatabase
 
         private readonly ConcurrentDictionary<Type, IRegisteredItem> _concurrentRegisteredItemDictionary = new ConcurrentDictionary<Type, IRegisteredItem>();
 
-        private readonly IQueryExpressionEngine _queryExpressionEngine = new DefaultQueryExpressionEngine();
+        private readonly Lazy<IQueryExpressionEngine> _queryExpressionEngine = new Lazy<IQueryExpressionEngine>(() => new DefaultQueryExpressionEngine());
 
         public void RegisteredType<T>(Func<T, Task<string>> getIdFunc)
             where T : class
@@ -95,7 +95,7 @@ namespace InMemoryDatabase
         {
             var type = typeof(T);
             var item = _concurrentRegisteredItemDictionary[type] as RegisteredItem<T>;
-            var predict = _queryExpressionEngine.TransformQueryExpression(queryItem);
+            var predict = _queryExpressionEngine.Value.TransformQueryExpression(queryItem);
             var jTokens = _concurrentDictionary.Where(k => predict(k.Value));
             var list = new List<T>();
 
