@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,9 +11,11 @@ namespace InMemoryDatabase
 {
     public class InMemoryDataTable
     {
-        private ConcurrentDictionary<string, JToken> _concurrentDictionary = new ConcurrentDictionary<string, JToken>();
+        private readonly ConcurrentDictionary<string, JToken> _concurrentDictionary = new ConcurrentDictionary<string, JToken>();
 
-        private ConcurrentDictionary<Type, IRegisteredItem> _concurrentRegisteredItemDictionary = new ConcurrentDictionary<Type, IRegisteredItem>();
+        private readonly ConcurrentDictionary<Type, IRegisteredItem> _concurrentRegisteredItemDictionary = new ConcurrentDictionary<Type, IRegisteredItem>();
+
+        private readonly IQueryExpressionEngine _queryExpressionEngine = new DefaultQueryExpressionEngine();
 
         public void RegisteredType<T>(Func<T, Task<string>> getIdFunc)
             where T : class
@@ -83,6 +88,24 @@ namespace InMemoryDatabase
             });
 
             return await item.BackwardFunc(jToken);
+        }
+
+        public async Task<IEnumerable<T>> QueryEntities<T>(QueryItem queryItem)
+            where T : class
+        {
+            var type = typeof(T);
+            var item = _concurrentRegisteredItemDictionary[type] as RegisteredItem<T>;
+            var predict = _queryExpressionEngine.TransformQueryExpression(queryItem);
+            var jTokens = _concurrentDictionary.Where(k => predict(k.Value));
+            var list = new List<T>();
+
+            foreach (var jToken in jTokens)
+            {
+                var obj = await item.BackwardFunc(jToken.Value);
+                list.Add(obj);
+            }
+
+            return list;
         }
     }
 }
