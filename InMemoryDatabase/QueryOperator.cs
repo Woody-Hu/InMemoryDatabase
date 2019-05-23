@@ -10,6 +10,8 @@ namespace InMemoryDatabase
         LessThan,
         GreaterThan,
         ArrayContains,
-        ArrayContainsPartial
+        ArrayContainsPartial,
+        LessThanOrEqual,
+        GreaterThanOrEqual
     }
 }

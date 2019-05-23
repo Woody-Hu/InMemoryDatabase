@@ -40,6 +40,8 @@ namespace TestConsole
             var g = await dataTable.QueryEntities<TestClass>(new QueryItem("SubClasses", QueryOperator.ArrayContainsPartial, "{\"Name\":\"b\"}"));
             var h = await dataTable.QueryEntities<TestClass>(new QueryItem("SubValues", QueryOperator.ArrayContains, 5.ToString()));
             var i = await dataTable.QueryEntities<TestClass>(new QueryItem("SubValues", QueryOperator.ArrayContainsPartial, 13.ToString()));
+            var j = await dataTable.QueryEntities<TestClass>(new QueryItem("Value", QueryOperator.GreaterThanOrEqual, 20.ToString()));
+            var k = await dataTable.QueryEntities<TestClass>(new QueryItem("Value", QueryOperator.LessThanOrEqual, 777.ToString()));
             Console.WriteLine("Hello World!");
         }
 
