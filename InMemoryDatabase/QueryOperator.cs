@@ -7,6 +7,8 @@ namespace InMemoryDatabase
     public enum QueryOperator
     {
         Equal,
+        NotEqual,
+        UpperEqual,
         LessThan,
         GreaterThan,
         ArrayContains,

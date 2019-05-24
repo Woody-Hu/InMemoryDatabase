@@ -10,7 +10,6 @@ namespace InMemoryDatabase
 
         public QueryOperator QueryOperator { get; }
 
-
         public string Value { get; }
 
         public QueryItem(string field, QueryOperator queryOperator, string value)
