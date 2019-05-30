@@ -14,6 +14,7 @@ namespace InMemoryDatabase
         ArrayContains,
         ArrayContainsPartial,
         LessThanOrEqual,
-        GreaterThanOrEqual
+        GreaterThanOrEqual,
+        In
     }
 }

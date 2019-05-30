@@ -44,6 +44,7 @@ namespace TestConsole
             var k = await dataTable.QueryEntities<TestClass>(new QueryItem("Value", QueryOperator.LessThanOrEqual, 777.ToString()));
             var l = await dataTable.QueryEntities<TestClass>(new QueryItem("Name", QueryOperator.NotEqual, "abc"));
             var m = await dataTable.QueryEntities<TestClass>(new QueryItem("Name", QueryOperator.UpperEqual, "aaa"));
+            var n = await dataTable.QueryEntities<TestClass>(new QueryItem("Value", QueryOperator.In, "[20, 35, 42]"));
             Console.WriteLine("Hello World!");
         }
 
